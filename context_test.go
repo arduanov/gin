@@ -331,6 +331,21 @@ func TestContextRenderJSON(t *testing.T) {
 }
 
 // Tests that the response is serialized as JSON
+// and Content-Type is set to application/json
+// and special HTML characters are preserved
+func TestContextRenderPureJSON(t *testing.T) {
+	c, w, _ := CreateTestContext()
+	c.PureJSON(201, H{"foo": "bar", "html": "<b>"})
+
+	assert.Equal(t, w.Code, 201)
+	assert.Equal(
+		t,
+		w.Body.String(),
+		"{\"foo\":\"bar\",\"html\":\"<b>\"}\n")
+	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
+}
+
+// Tests that the response is serialized as JSON
 // we change the content-type before
 func TestContextRenderAPIJSON(t *testing.T) {
 	c, w, _ := CreateTestContext()

@@ -14,6 +14,10 @@ type (
 		Data interface{}
 	}
 
+	PureJSON struct {
+		Data interface{}
+	}
+
 	IndentedJSON struct {
 		Data interface{}
 	}
@@ -23,6 +27,13 @@ var jsonContentType = []string{"application/json; charset=utf-8"}
 
 func (r JSON) Render(w http.ResponseWriter) error {
 	return WriteJSON(w, r.Data)
+}
+
+func (r PureJSON) Render(w http.ResponseWriter) error {
+	writeContentType(w, jsonContentType)
+	encoder := json.NewEncoder(w)
+	encoder.SetEscapeHTML(false)
+	return encoder.Encode(r.Data)
 }
 
 func (r IndentedJSON) Render(w http.ResponseWriter) error {
