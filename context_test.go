@@ -317,12 +317,16 @@ func TestContextGetCookie(t *testing.T) {
 
 // Tests that the response is serialized as JSON
 // and Content-Type is set to application/json
+// and special HTML characters are escaped
 func TestContextRenderJSON(t *testing.T) {
 	c, w, _ := CreateTestContext()
-	c.JSON(201, H{"foo": "bar"})
+	c.JSON(201, H{"foo": "bar", "html": "<b>"})
 
 	assert.Equal(t, w.Code, 201)
-	assert.Equal(t, w.Body.String(), "{\"foo\":\"bar\"}\n")
+	assert.Equal(
+		t,
+		w.Body.String(),
+		"{\"foo\":\"bar\",\"html\":\"\\u003cb\\u003e\"}\n")
 	assert.Equal(t, w.HeaderMap.Get("Content-Type"), "application/json; charset=utf-8")
 }
 
