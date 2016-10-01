@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin/binding"
-	"gin/render"
+	"github.com/arduanov/gin/render"
 	"github.com/manucorporat/sse"
 	"golang.org/x/net/context"
 )
