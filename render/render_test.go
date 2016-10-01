@@ -19,13 +19,34 @@ import (
 func TestRenderJSON(t *testing.T) {
 	w := httptest.NewRecorder()
 	data := map[string]interface{}{
-		"foo": "bar",
+		"foo":  "bar",
+		"html": "<b>",
 	}
 
 	err := (JSON{data}).Render(w)
 
 	assert.NoError(t, err)
-	assert.Equal(t, w.Body.String(), "{\"foo\":\"bar\"}\n")
+	assert.Equal(
+		t,
+		w.Body.String(),
+		"{\"foo\":\"bar\",\"html\":\"\\u003cb\\u003e\"}\n")
+	assert.Equal(t, w.Header().Get("Content-Type"), "application/json; charset=utf-8")
+}
+
+func TestRenderPureJSON(t *testing.T) {
+	w := httptest.NewRecorder()
+	data := map[string]interface{}{
+		"foo":  "bar",
+		"html": "<b>",
+	}
+
+	err := (PureJSON{data}).Render(w)
+
+	assert.NoError(t, err)
+	assert.Equal(
+		t,
+		w.Body.String(),
+		"{\"foo\":\"bar\",\"html\":\"<b>\"}\n")
 	assert.Equal(t, w.Header().Get("Content-Type"), "application/json; charset=utf-8")
 }
 
